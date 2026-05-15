@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחקר דרישות מקדים: פרויקט דחלילאיי</title>
+    <title>מחקר דרישות מקדים: פרויקט ScarecrowAI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <!-- Chosen Palette: Earthy Greens, Calm Neutrals, Alert Orange/Red for highlights -->
-    <!-- Application Structure Plan: A Single Page Application (SPA) structured as a professional research dashboard. It uses a sidebar navigation (bottom nav on mobile) to switch between logical sections: Overview, Market Research, Proposed Solution, Technology Stack, Cost Estimation, and Academic Research. This structure allows the user (and project supervisors) to easily navigate the preliminary research logically, without being overwhelmed by a massive text document. Interactivity makes the data engaging. -->
+    <!-- Chosen Palette: Deep Greens (Agriculture/Military), Neutral Slates, Alert Red for security -->
+    <!-- Application Structure Plan: Professional research dashboard with side navigation. Matches the comprehensive research document provided by the user. Tabs cover: Overview (Problem), Competitors (including ZORONET), Solution (Edge AI, SIA DC-09, RCA), Hardware/Tech (Jetson, YOLO), Costs (Ranges from document), Academic. -->
     <!-- Visualization & Content Choices: 
-         1. Overview: Text & stats -> Inform -> Clean typography blocks -> Easy reading.
-         2. Market: Competitor Analysis -> Compare -> Interactive Grid Cards -> Hover interactions -> Shows flaws vs Dahlil-AI -> HTML/CSS.
-         3. Tech/Hardware: System Architecture -> Organize -> Flexbox layout with Unicode icons -> Clear mental model -> HTML/CSS.
-         4. Costs: Budget Estimation -> Inform/Proportion -> Doughnut Chart -> Visualizing cost breakdown -> Chart.js. NO SVG/Mermaid used.
+         1. Competitors: Grid layout for easy comparison. HTML/CSS.
+         2. Tech: Flex list for clear architectural understanding.
+         3. Costs: Doughnut chart showing the mid-point of the estimated ranges from the doc. Table showing exact ranges. Chart.js.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
@@ -34,7 +33,7 @@
                             700: '#15803d',
                             900: '#14532d',
                         },
-                        accent: '#f97316' // Orange for highlights
+                        accent: '#b91c1c' // Dark Red for terror/security alerts
                     }
                 }
             }
@@ -42,10 +41,9 @@
     </script>
     <style>
         body {
-            background-color: #f8fafc; /* Very light cool gray */
-            color: #1e293b;
+            background-color: #f8fafc;
+            color: #0f172a;
         }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -58,7 +56,6 @@
             font-weight: 600;
         }
 
-        /* Strict Chart Container Styling */
         .chart-container {
             position: relative;
             width: 100%;
@@ -82,67 +79,70 @@
 </head>
 <body class="flex flex-col md:flex-row min-h-screen">
 
-    <!-- Sidebar Navigation (Desktop) / Bottom Nav (Mobile) -->
-    <nav class="bg-white shadow-lg w-full md:w-64 flex-shrink-0 md:h-screen sticky top-0 md:fixed z-50 flex flex-row md:flex-col justify-between md:justify-start overflow-x-auto md:overflow-x-hidden border-b md:border-b-0 md:border-l border-gray-200">
-        <div class="p-6 hidden md:block">
-            <h1 class="text-2xl font-bold text-brand-700 flex items-center gap-2">
-                <span class="text-3xl">&#129302;</span> דחליל-AI
+    <!-- Navigation -->
+    <nav class="bg-white shadow-xl w-full md:w-64 flex-shrink-0 md:h-screen sticky top-0 md:fixed z-50 flex flex-row md:flex-col justify-between md:justify-start overflow-x-auto md:overflow-x-hidden border-b md:border-b-0 md:border-l border-gray-200">
+        <div class="p-6 hidden md:block border-b border-gray-100">
+            <h1 class="text-2xl font-black text-brand-900 flex items-center gap-2">
+                <span class="text-3xl">&#128680;</span> ScarecrowAI
             </h1>
-            <p class="text-xs text-gray-500 mt-1">מחקר דרישות ופרויקט גמר 2026</p>
+            <p class="text-xs text-gray-500 mt-1 font-bold">דחלילאיי - אבטחה חקלאית</p>
+            <p class="text-xs text-gray-400 mt-1">פרויקט גמר 2026</p>
         </div>
         
-        <div class="flex flex-row md:flex-col w-full" id="nav-menu">
+        <div class="flex flex-row md:flex-col w-full mt-2" id="nav-menu">
             <button onclick="switchTab('overview')" class="nav-btn nav-item active flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap">
-                &#128269; סקירת המערכת
+                &#128269; תקציר מנהלים
             </button>
             <button onclick="switchTab('market')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
-                &#128202; מתחרים ובעיות
+                &#128202; מתחרים (ZORONET ועוד)
             </button>
             <button onclick="switchTab('solution')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
-                &#128161; הפתרון שלנו
+                &#128161; הפתרון והארכיטקטורה
             </button>
             <button onclick="switchTab('tech')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
                 &#128736; טכנולוגיה וחומרה
             </button>
             <button onclick="switchTab('costs')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
-                &#128176; עלויות ומשאבים
+                &#128176; הערכת עלויות
             </button>
             <button onclick="switchTab('research')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
-                &#128218; רקע אקדמי
+                &#128218; ביסוס אקדמי (RCA)
             </button>
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 md:mr-64 p-4 md:p-8 overflow-y-auto">
+    <!-- Main Content -->
+    <main class="flex-1 md:mr-64 p-4 md:p-8 overflow-y-auto bg-slate-50">
         
         <!-- SECTION 1: Overview -->
         <section id="overview" class="content-section fade-in block">
             <header class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">תקציר מנהלים: פרויקט "דחלילאיי"</h2>
-                <p class="text-gray-600 text-lg">מערכת אוטונומית מבוססת בינה מלאכותית להרחקת מזיקים מחקלאות</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">מאבק בטרור החקלאי בישראל</h2>
+                <p class="text-gray-600 text-lg">מעבר מאבטחה פסיבית לשיטור מנבא (Predictive Policing) מבוסס Edge AI.</p>
             </header>
             
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6">
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    פרויקט "דחלילאיי" מציע פתרון חדשני לבעיה עתיקת יומין: נזקי חקלאות הנגרמים על ידי ציפורים ומזיקים אחרים. נזקים אלו מוערכים במיליארדי דולרים בשנה ברחבי העולם.
-                    המערכת שלנו משלבת ראייה ממוחשבת (Computer Vision) בקצה (Edge AI) כדי לזהות בזמן אמת חדירת מזיקים, לסווג אותם, ולהפעיל אמצעי הרתעה ספציפיים ומשתנים (קול, תנועה, תאורה) כדי למנוע התרגלות (Habituation).
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 mb-6">
+                <p class="text-gray-700 leading-relaxed mb-6 text-lg">
+                    הפשיעה החקלאית (גניבות בקר, השחתת ציוד, הצתות מכוונות) מסבה נזק של מיליונים ומהווה איום אסטרטגי. התמודדות משמר הגבול מוגבלת עקב השטחים העצומים, וחקלאים סובלים מ"עייפות התראות" ממצלמות אבטחה טיפשות שמתריעות על כל כלב שוטה או ענף ברוח.
+                    <br><br>
+                    פלטפורמת <strong>דחלילאיי (ScarecrowAI)</strong> היא שומר וירטואלי חכם. היא משתמשת במחשוב קצה עצמאי (Off-Grid) כדי לנתח וידאו בשטח ללא תלות בענן. המערכת מזהה אנומליות, מפעילה <strong>הרתעה אקטיבית פולימורפית</strong> (לייזר ירוק ממוקד וסאונד משתנה), ומשדרת התראות אמת בלבד (SIA DC-09) ישירות למוקדי השמירה ולמכשיר החקלאי.
                 </p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                    <div class="bg-brand-50 p-4 rounded-lg border border-brand-100 text-center">
-                        <div class="text-3xl mb-2">&#128065;</div>
-                        <h4 class="font-bold text-brand-900">זיהוי מדויק</h4>
-                        <p class="text-sm text-gray-600 mt-1">אלגוריתם AI מזהה את סוג המזיק ומונע הפעלת שווא על בני אדם או חיות משק.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-100 p-5 rounded-xl border border-slate-200">
+                        <div class="text-4xl mb-3 text-brand-600">&#129488;</div>
+                        <h4 class="font-bold text-slate-800 text-lg">עיבוד קצה (Edge AI)</h4>
+                        <p class="text-sm text-slate-600 mt-2">אין צורך באינטרנט מהיר. רשתות ניורונים (YOLO) פועלות על החומרה בשדה, מסווגות אנשים/רכבים ומונעות אזעקות שווא.</p>
                     </div>
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center">
-                        <div class="text-3xl mb-2">&#127919;</div>
-                        <h4 class="font-bold text-blue-900">הרתעה דינמית</h4>
-                        <p class="text-sm text-gray-600 mt-1">שינוי דפוסי פעולה אוטומטי כדי למנוע מהמזיקים להתרגל למערכת.</p>
+                    <div class="bg-slate-100 p-5 rounded-xl border border-slate-200">
+                        <div class="text-4xl mb-3 text-accent">&#128294;</div>
+                        <h4 class="font-bold text-slate-800 text-lg">הרתעה פולימורפית</h4>
+                        <p class="text-sm text-slate-600 mt-2">שילוב לייזר ירוק (532nm) ואודיו דינמי (סירנות, נביחות) המשתנה לפי סוג האיום כדי למנוע התרגלות (Habituation).</p>
                     </div>
-                    <div class="bg-orange-50 p-4 rounded-lg border border-orange-100 text-center">
-                        <div class="text-3xl mb-2">&#128200;</div>
-                        <h4 class="font-bold text-orange-900">איסוף נתונים</h4>
-                        <p class="text-sm text-gray-600 mt-1">תיעוד תנועת המזיקים והפקת דוחות לחקלאי לטובת קבלת החלטות.</p>
+                    <div class="bg-slate-100 p-5 rounded-xl border border-slate-200">
+                        <div class="text-4xl mb-3 text-blue-600">&#128200;</div>
+                        <h4 class="font-bold text-slate-800 text-lg">חקר אירועים (RCA)</h4>
+                        <p class="text-sm text-slate-600 mt-2">ניתוח סיבות שורש של היסטוריית הפשיעה. הפקת מפות חום וזיהוי דפוסים באמצעות LLMs לתכנון כוחות יעיל.</p>
                     </div>
                 </div>
             </div>
@@ -151,103 +151,131 @@
         <!-- SECTION 2: Market & Competitors -->
         <section id="market" class="content-section fade-in hidden">
             <header class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">מחקר שוק ומתחרים</h2>
-                <p class="text-gray-600 text-lg">בחינת הפתרונות הקיימים בשוק והכשלים המרכזיים שלהם.</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">ניתוח מתחרים וכשלי שוק</h2>
+                <p class="text-gray-600 text-lg">הפערים בפתרונות הקיים והיתרון של דחלילאיי בשטח מנותק.</p>
             </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Competitor 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                    <div class="text-4xl mb-3 text-center">&#128168;</div>
-                    <h3 class="text-xl font-bold text-center mb-2">תותחי גז / פצצות קול</h3>
-                    <p class="text-sm text-gray-600 mb-4 text-center">הפתרון הנפוץ ביותר כיום. מפיק פיצוצים רועשים במרווחי זמן קבועים.</p>
-                    <div class="bg-red-50 p-3 rounded text-sm text-red-800 border border-red-100">
-                        <strong>בעיות מרכזיות:</strong>
-                        <ul class="list-disc list-inside mt-1">
-                            <li>התרגלות מהירה מאוד של הציפורים (מספר ימים).</li>
-                            <li>זיהום רעש סביבתי ופגיעה ביישובים סמוכים.</li>
-                            <li>פועל בצורה עיוורת גם כשאין מזיקים.</li>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                
+                <!-- ZORONET -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-2 border-brand-100 relative">
+                    <span class="absolute top-0 right-0 bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-xl">רשתות תקשורת</span>
+                    <h3 class="text-xl font-bold mb-2 mt-2">ZORONET (זורונט) ודומותיה</h3>
+                    <p class="text-sm text-gray-600 mb-4">פתרונות מבוססי רשתות סנסורים ומצלמות אלחוטיות הפרוסות בשטחים רחבים לצורך איסוף נתונים למוקד.</p>
+                    <div class="bg-red-50 p-4 rounded-lg text-sm text-red-900 border border-red-100">
+                        <strong class="block mb-1">הפער לעומת דחלילאיי:</strong>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>מתבססות לרוב על תקשורת נתונים כבדה לענן (שלא קיימת בשטח).</li>
+                            <li>חסרות מערך <strong>הרתעה אקטיבית ומשתנה (לייזר/קול)</strong>. הן פאסיביות.</li>
+                            <li>ללא עיבוד Edge AI בקצה העמוד, מה שגורם לעומס התראות סרק.</li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Competitor 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                    <div class="text-4xl mb-3 text-center">&#128641;</div> <!-- Laser proxy -->
-                    <h3 class="text-xl font-bold text-center mb-2">מערכות לייזר אוטומטיות</h3>
-                    <p class="text-sm text-gray-600 mb-4 text-center">מערכות (כמו Agrilaser) הסורקות את השדה בקרני לייזר ירוקות.</p>
-                    <div class="bg-red-50 p-3 rounded text-sm text-red-800 border border-red-100">
-                        <strong>בעיות מרכזיות:</strong>
-                        <ul class="list-disc list-inside mt-1">
-                            <li>עלות גבוהה מאוד (אלפי דולרים למערכת).</li>
-                            <li>סריקה עיוורת - לא מזהה מטרה, עובד על טיימר.</li>
-                            <li>סכנת סינוור לבני אדם / כלים חקלאיים.</li>
+                <!-- LVT -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-2">LiveView Tech (LVT)</h3>
+                    <p class="text-sm text-gray-600 mb-4">עגלות ניטור סולאריות ניידות עם מצלמות תרמיות, תקשורת והרתעה חזותית.</p>
+                    <div class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 border border-gray-200">
+                        <strong class="block mb-1">מגבלות:</strong>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>בולטות פיזית אדירה (גנבים לומדים את נקודות העיוורון).</li>
+                            <li>עלויות השכרה אסטרונומיות שאינן משתלמות לחקלאי קצה.</li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Competitor 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                    <div class="text-4xl mb-3 text-center">&#129413;</div>
-                    <h3 class="text-xl font-bold text-center mb-2">דחלילים סטטיים / עפיפונים</h3>
-                    <p class="text-sm text-gray-600 mb-4 text-center">פתרונות ויזואליים דמויי טורפים שמוצבים בשטח.</p>
-                    <div class="bg-red-50 p-3 rounded text-sm text-red-800 border border-red-100">
-                        <strong>בעיות מרכזיות:</strong>
-                        <ul class="list-disc list-inside mt-1">
-                            <li>אפקטיביות יורדת לאפס לאחר זמן קצר.</li>
-                            <li>דורש הזזה ידנית מתמדת על ידי החקלאי.</li>
-                            <li>בלאי גבוה מפגעי מזג אוויר.</li>
+                <!-- Magos -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-2">Magos Systems</h3>
+                    <p class="text-sm text-gray-600 mb-4">מערכות מכ"ם (Radar) ברזולוציה גבוהה יחד עם מצלמות PTZ שמסתובבות למטרה.</p>
+                    <div class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 border border-gray-200">
+                        <strong class="block mb-1">מגבלות:</strong>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>מחיר חומרה יקר מאוד המיועד למתקנים אסטרטגיים.</li>
+                            <li>התקנה מסובכת הדורשת מומחיות וכיול רדאר מדויק.</li>
                         </ul>
                     </div>
                 </div>
+
+                <!-- Avigilon / Hikvision -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-2">Avigilon / Hikvision</h3>
+                    <p class="text-sm text-gray-600 mb-4">מצלמות אבטחה חכמות (CCTV) מבוססות AI, עם שרתי חקירה והקלטה מקומיים (NVR).</p>
+                    <div class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 border border-gray-200">
+                        <strong class="block mb-1">מגבלות:</strong>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>דורשות תשתית תקשורת קווית (LAN) ויציבות חשמל מוחלטת.</li>
+                            <li>לא ניתן לפרוס בשדות פתוחים, כרמים ושטחי מרעה מבודדים.</li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-        <!-- SECTION 3: Proposed Solution -->
+        <!-- SECTION 3: Solution & Architecture -->
         <section id="solution" class="content-section fade-in hidden">
             <header class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">היתרון היחסי של דחלילאיי</h2>
-                <p class="text-gray-600 text-lg">כיצד המערכת פותרת את כשלי השוק הקיימים.</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">ארכיטקטורת הפתרון</h2>
+                <p class="text-gray-600 text-lg">כיצד המערכת עובדת מקצה לקצה - מהשדה ועד לחפ"ק.</p>
             </header>
 
-            <div class="bg-white rounded-xl shadow-sm border border-brand-200 p-6 overflow-hidden">
-                <div class="flex flex-col md:flex-row gap-8 items-center">
-                    <div class="flex-1">
-                        <h3 class="text-2xl font-bold text-brand-700 mb-4">תגובה מותאמת ואקטיבית</h3>
-                        <ul class="space-y-4">
-                            <li class="flex items-start gap-3">
-                                <span class="text-accent text-xl">&#10004;</span>
-                                <div>
-                                    <strong class="block text-gray-800">מניעת התרגלות (Anti-Habituation)</strong>
-                                    <p class="text-sm text-gray-600">המערכת משתמשת בלמידת חיזוק או באלגוריתמיקה אקראית כדי לשנות את סוג ההרתעה (קולות עורב, צפצופים, תנועה מכנית) בהתאם לתגובת הציפור בעבר.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="text-accent text-xl">&#10004;</span>
-                                <div>
-                                    <strong class="block text-gray-800">פעולה ממוקדת בלבד</strong>
-                                    <p class="text-sm text-gray-600">המערכת "ישנה" עד לזיהוי ודאי של מזיק דרך המצלמה. חוסך באנרגיה (קריטי להפעלה סולארית) ומונע רעש מיותר.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="text-accent text-xl">&#10004;</span>
-                                <div>
-                                    <strong class="block text-gray-800">עלות אל מול תועלת</strong>
-                                    <p class="text-sm text-gray-600">שימוש ברכיבי קצה זולים יחסית (Raspberry Pi/Jetson) ומצלמות אבטחה סטנדרטיות, מאפשר פריסה רחבה בעלות שבריר ממערכות לייזר מסחריות.</p>
-                                </div>
-                            </li>
-                        </ul>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+                
+                <div class="flex flex-col lg:flex-row gap-12 items-center">
+                    <div class="flex-1 space-y-6">
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="bg-green-100 p-3 rounded-full text-green-700 text-2xl">&#128247;</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">1. איסוף וחיישנים בשטח</h4>
+                                <p class="text-gray-600 text-sm mt-1">מצלמת PTZ מוגנת מים (IP67) עם חיישן Starlight / תרמי. פועלת 24/7 מאנרגיה סולארית ועוקבת אחר תנועה בסביבה חשוכה.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-100 p-3 rounded-full text-blue-700 text-2xl">&#129488;</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">2. סינון אנומליות ו-AI מקומי</h4>
+                                <p class="text-gray-600 text-sm mt-1">מעבד ה-NVIDIA Jetson מקבל את הוידאו. אלגוריתמי YOLOv8 ו-LSTM שואלים: זה טנדר? אדם? עגל? אש? אם זה איום - עוברים לשלב הבא.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="bg-orange-100 p-3 rounded-full text-orange-700 text-2xl">&#128294;</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">3. הרתעה וגירוש (Polymorphic)</h4>
+                                <p class="text-gray-600 text-sm mt-1">המערכת משתמשת בלייזר ירוק בטיחותי וסירנות המפיקות סאונד רנדומלי מתוך מאגר מקומי כדי להבריח את הפולש באותו רגע.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="bg-red-100 p-3 rounded-full text-red-700 text-2xl">&#128225;</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">4. דיווח למוקד ואינטגרציה</h4>
+                                <p class="text-gray-600 text-sm mt-1">שליחת חבילת נתונים קטנה (תמונת Keyframe + קואורדינטות) דרך מודם 4G בתקן <strong>SIA DC-09-2026</strong> המאובטח ישירות למוקד השומר החדש / משטרה ולדשבורד ה-React/Mapbox של החקלאי.</p>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="flex-1 bg-gray-50 p-6 rounded-lg text-center border border-gray-200">
-                        <h4 class="font-bold text-gray-700 mb-4">מעגל הפעולה של המערכת</h4>
-                        <div class="flex flex-col gap-2">
-                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-500">1. סריקת מצלמה וזיהוי תנועה</div>
-                            <div class="text-gray-400">&#8595;</div>
-                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-indigo-500">2. סיווג אובייקט (YOLO AI) - האם זה מזיק?</div>
-                            <div class="text-gray-400">&#8595;</div>
-                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-orange-500">3. בחירת אמצעי הרתעה אופטימלי (שמע/תנועה/אור)</div>
-                            <div class="text-gray-400">&#8595;</div>
-                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-green-500">4. הפעלה ממוקדת ותיעוד בענן</div>
+                    
+                    <div class="flex-1 bg-slate-800 rounded-xl p-6 text-white w-full border-4 border-slate-700 relative overflow-hidden">
+                        <div class="absolute -top-4 -right-4 text-9xl opacity-10">&#128187;</div>
+                        <h4 class="font-bold text-xl mb-4 text-green-400">הזרמת נתונים (Data Pipeline)</h4>
+                        <div class="space-y-4 font-mono text-sm">
+                            <div class="bg-slate-700 p-3 rounded border-l-4 border-green-500">
+                                <span class="text-gray-400">Input:</span> RTSP Stream (Camera)
+                            </div>
+                            <div class="bg-slate-700 p-3 rounded border-l-4 border-blue-500">
+                                <span class="text-gray-400">Process:</span> YOLOv8 TensorRT (NVIDIA Jetson) -> Object == "Human/Truck"
+                            </div>
+                            <div class="bg-slate-700 p-3 rounded border-l-4 border-orange-500">
+                                <span class="text-gray-400">Act:</span> GPIO Relay -> Trigger 532nm Laser & Siren
+                            </div>
+                            <div class="bg-slate-700 p-3 rounded border-l-4 border-red-500">
+                                <span class="text-gray-400">Output:</span> MQTT / REST API (AWS IoT Core) -> SIA DC-09 XML Alarm
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -257,121 +285,115 @@
         <!-- SECTION 4: Technology & Hardware -->
         <section id="tech" class="content-section fade-in hidden">
             <header class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">דרישות טכנולוגיות וחומרה</h2>
-                <p class="text-gray-600 text-lg">האמצעים הנדרשים לפיתוח אב הטיפוס.</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">דרישות טכנולוגיה וחומרה</h2>
+                <p class="text-gray-600 text-lg">פירוט רכיבי התוכנה והאלקטרוניקה לבניית המערכת.</p>
             </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Software Stack -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="text-2xl">&#128187;</span> תוכנה ואלגוריתמיקה</h3>
-                    <div class="space-y-4">
-                        <div class="border-b pb-2">
-                            <strong class="text-gray-800 block">מודל ראייה ממוחשבת (CV)</strong>
-                            <span class="text-sm text-gray-600">YOLOv8 או MobileNet SSD לזיהוי אובייקטים בזמן אמת על חומרת קצה מוגבלת (Edge AI). שימוש בספריית OpenCV לעיבוד התמונה.</span>
-                        </div>
-                        <div class="border-b pb-2">
-                            <strong class="text-gray-800 block">שפת פיתוח (Backend)</strong>
-                            <span class="text-sm text-gray-600">Python 3.x כשפה המרכזית בבקר הקצה (ניהול החומרה, תקשורת והרצת המודל). שימוש ב-FastAPI לניהול API מקומי.</span>
-                        </div>
-                        <div class="border-b pb-2">
-                            <strong class="text-gray-800 block">תקשורת ומסד נתונים</strong>
-                            <span class="text-sm text-gray-600">פרוטוקול MQTT לדיווח אירועים מהיר. שמירת לוגים מקומית ב-SQLite או סנכרון ל-Firebase/MongoDB בענן.</span>
-                        </div>
-                        <div>
-                            <strong class="text-gray-800 block">ממשק משתמש (לוח בקרה)</strong>
-                            <span class="text-sm text-gray-600">אפליקציית Web פשוטה (React / HTML+JS+Tailwind) להצגת סטטיסטיקות לחקלאי ושליטה מרחוק.</span>
-                        </div>
-                    </div>
-                </div>
-
+                
                 <!-- Hardware Stack -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="text-2xl">&#128736;</span> חומרה וציוד נדרש</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
-                            <div class="text-3xl">&#128421;</div>
-                            <div>
-                                <strong class="text-gray-800 text-sm block">מיקרו-בקר / מחשב קצה</strong>
-                                <span class="text-xs text-gray-500">Raspberry Pi 4/5 או NVIDIA Jetson Nano (מועדף לביצועי AI גבוהים).</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
-                            <div class="text-3xl">&#128247;</div>
-                            <div>
-                                <strong class="text-gray-800 text-sm block">מצלמת רשת / ייעודית</strong>
-                                <span class="text-xs text-gray-500">מצלמת RPi Camera Module 3 או מצלמת IP חיצונית תומכת ראיית לילה (IR).</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
-                            <div class="text-3xl">&#128226;</div>
-                            <div>
-                                <strong class="text-gray-800 text-sm block">אמצעי הרתעה (Actuators)</strong>
-                                <span class="text-xs text-gray-500">רמקול עוצמתי (Horn Speaker) וכרטיס קול בסיסי להפקת צלילים משתנים. אופציה: פנס לד עוצמתי להבהוב בלילה.</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
-                            <div class="text-3xl">&#128267;</div>
-                            <div>
-                                <strong class="text-gray-800 text-sm block">הזנת מתח סולארית (אופציונלי לאב טיפוס)</strong>
-                                <span class="text-xs text-gray-500">פאנל סולארי קטן 50W, בקר טעינה וסוללת LiFePo4 לעצמאות בשטח.</span>
-                            </div>
-                        </div>
-                    </div>
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><span class="text-brand-600">&#128736;</span> מפרט חומרת קצה (Edge)</h3>
+                    <ul class="space-y-5">
+                        <li>
+                            <strong class="block text-gray-800 mb-1">NVIDIA Jetson Orin Nano Super</strong>
+                            <p class="text-sm text-gray-600">לוח פיתוח מבוסס ארכיטקטורת Ampere עם 1024 ליבות CUDA. מפיק 67 TOPS, צורך פחות מ-15 וואט בעבודה. המוח של המערכת.</p>
+                        </li>
+                        <li>
+                            <strong class="block text-gray-800 mb-1">מערכת אנרגיה סולארית (Off-Grid)</strong>
+                            <p class="text-sm text-gray-600">פאנל 100W/150W, בקר טעינה MPPT, וסוללת ליתיום ברזל פוספט (LiFePO4) 12V 50Ah לעמידות בתנאי חוץ ופריקות עמוקות.</p>
+                        </li>
+                        <li>
+                            <strong class="block text-gray-800 mb-1">מצלמת תנאי שטח (PTZ Starlight)</strong>
+                            <p class="text-sm text-gray-600">מצלמת רשת עם רגישות אור גבוהה במיוחד להפקת תמונה צבעונית בחשיכה (או מצלמה תרמית) בתקן אטימות IP67.</p>
+                        </li>
+                        <li>
+                            <strong class="block text-gray-800 mb-1">מקרן לייזר וממסרים</strong>
+                            <p class="text-sm text-gray-600">לייזר ירוק 532nm מסיווג 3B, רמקול חוץ עוצמתי, וממסרי מתח חכמים המופעלים מפיני ה-GPIO של הבקר.</p>
+                        </li>
+                    </ul>
                 </div>
+
+                <!-- Software Stack -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><span class="text-brand-600">&#128187;</span> ענן, ממשק ותוכנה</h3>
+                    <ul class="space-y-5">
+                        <li>
+                            <strong class="block text-gray-800 mb-1">Machine Learning / CV</strong>
+                            <p class="text-sm text-gray-600">מודלים של YOLOv8/v11 לזיהוי חפצים, בשילוב רשתות קונבולוציה CNN+LSTM לניתוח אנומליות זמניות ומרחביות בחווה.</p>
+                        </li>
+                        <li>
+                            <strong class="block text-gray-800 mb-1">גילוי מוקדם של הצתות (Early Arson Detection)</strong>
+                            <p class="text-sm text-gray-600">שימוש במודל DetectNet_v2 / ResNet-18 המכווץ באמצעות Pruning לזיהוי להבות ועשן לפני התפשטות השריפה.</p>
+                        </li>
+                        <li>
+                            <strong class="block text-gray-800 mb-1">פרוטוקול תקשורת משטרתי - SIA DC-09</strong>
+                            <p class="text-sm text-gray-600">תקן תקשורת מאובטח עולמי להעברת אזעקות אמת מהשדה למערכות ניהול במוקדים (100 של המשטרה או מוקדי אבטחה פרטיים).</p>
+                        </li>
+                        <li>
+                            <strong class="block text-gray-800 mb-1">מערכת מידע גיאוגרפית (GIS Dashboard)</strong>
+                            <p class="text-sm text-gray-600">פיתוח ב-React.js בשילוב ספריות מפות כגון Leaflet.js עם GeoServer או Mapbox GL JS למיפוי ויזואלי של ההתראות בזמן אמת.</p>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
         </section>
 
         <!-- SECTION 5: Cost Estimation -->
         <section id="costs" class="content-section fade-in hidden">
             <header class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">הערכת עלויות ואמצעים</h2>
-                <p class="text-gray-600 text-lg">תקציב משוער לבניית אב-טיפוס אחד (מערכת עצמאית אחת).</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">תקצוב והערכת עלויות (CAPEX)</h2>
+                <p class="text-gray-600 text-lg">בחינה פיננסית להקמת צומת קצה בודד (אב-טיפוס) ע"פ המחקר.</p>
             </header>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 
-                <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-xl font-bold mb-4">טבלת פירוט עלויות</h3>
-                    <table class="w-full text-sm text-right text-gray-500">
-                        <thead class="text-xs text-gray-700 bg-gray-50 border-b">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+                    <h3 class="text-xl font-bold mb-4">טבלת השקעה לאב-טיפוס (טווחים ממחקר הדרישות)</h3>
+                    <table class="w-full text-sm text-right text-gray-600">
+                        <thead class="text-xs text-gray-700 bg-gray-100 border-b-2 border-gray-200">
                             <tr>
-                                <th scope="col" class="px-2 py-3">רכיב</th>
-                                <th scope="col" class="px-2 py-3 text-left">עלות (₪)</th>
+                                <th scope="col" class="px-3 py-4 font-bold">רכיב טכנולוגי</th>
+                                <th scope="col" class="px-3 py-4 font-bold text-left">טווח עלות (₪)</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="bg-white border-b">
-                                <td class="px-2 py-3 font-medium text-gray-900">יחידת חישוב (Jetson Nano / RPi)</td>
-                                <td class="px-2 py-3 text-left font-bold">500</td>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-3 py-4 font-medium text-gray-900">מחשב קצה מבוסס AI (Jetson Orin Nano)</td>
+                                <td class="px-3 py-4 text-left font-bold font-mono">950 - 1,400 ₪</td>
                             </tr>
-                            <tr class="bg-white border-b">
-                                <td class="px-2 py-3 font-medium text-gray-900">מערכת צילום ולדים IR</td>
-                                <td class="px-2 py-3 text-left font-bold">250</td>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-3 py-4 font-medium text-gray-900">מצלמת PTZ, אינפרא-אדום / Starlight</td>
+                                <td class="px-3 py-4 text-left font-bold font-mono">600 - 1,500 ₪</td>
                             </tr>
-                            <tr class="bg-white border-b">
-                                <td class="px-2 py-3 font-medium text-gray-900">מערכת שמע/רמקול ואלקטרוניקה</td>
-                                <td class="px-2 py-3 text-left font-bold">150</td>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-3 py-4 font-medium text-gray-900">מערך אנרגיה סולארית (פאנל 100W + סוללה LiFePO4)</td>
+                                <td class="px-3 py-4 text-left font-bold font-mono">800 - 1,300 ₪</td>
                             </tr>
-                            <tr class="bg-white border-b">
-                                <td class="px-2 py-3 font-medium text-gray-900">מארז מוגן מים (IP65) וזווד</td>
-                                <td class="px-2 py-3 text-left font-bold">200</td>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-3 py-4 font-medium text-gray-900">מודם סלולרי תעשייתי (4G/LTE)</td>
+                                <td class="px-3 py-4 text-left font-bold font-mono">200 - 400 ₪</td>
                             </tr>
-                            <tr class="bg-white border-b">
-                                <td class="px-2 py-3 font-medium text-gray-900">מערכת כוח (סוללה + בקר, ללא פאנל)</td>
-                                <td class="px-2 py-3 text-left font-bold">300</td>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-3 py-4 font-medium text-gray-900">הרתעה אקטיבית (לייזר 532nm + צופר + פלאש)</td>
+                                <td class="px-3 py-4 text-left font-bold font-mono">400 - 1,000 ₪</td>
                             </tr>
-                            <tr class="bg-gray-100 font-bold text-gray-900">
-                                <td class="px-2 py-3">סה"כ משוער לאב-טיפוס</td>
-                                <td class="px-2 py-3 text-left">1,400 ₪</td>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-3 py-4 font-medium text-gray-900">מארז מוגן מים (IP67), אלקטרוניקה וכבלים</td>
+                                <td class="px-3 py-4 text-left font-bold font-mono">300 - 600 ₪</td>
+                            </tr>
+                            <tr class="bg-brand-50 border-t-2 border-brand-200">
+                                <td class="px-3 py-4 font-bold text-brand-900 text-lg">סה"כ מוערך לאב-טיפוס</td>
+                                <td class="px-3 py-4 text-left font-black text-brand-900 text-lg font-mono">3,250 - 6,200 ₪</td>
                             </tr>
                         </tbody>
                     </table>
-                    <p class="text-xs text-gray-400 mt-4">* עלויות התוכנה (סביבות פיתוח, מודלים) הן ברובן חינמיות (Open Source). נדרשת זמינות במעבדות המכללה למדפסות תלת-ממד למארזים וכלי הלחמה.</p>
+                    <p class="text-xs text-gray-400 mt-4">* עלויות ה-OPEX החודשיות (SIM סלולרי ושרת AWS הבסיסי) מוערכות ב-15-30 ש"ח למצלמה ועוד כ-$20-$60 חודשי לתשתיות ענן לחמ"ל.</p>
                 </div>
 
-                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-xl font-bold mb-4 text-center">התפלגות התקציב למערכת</h3>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4 text-center">התפלגות התקציב (מבוסס ממוצע)</h3>
                     <div class="chart-container">
                         <canvas id="costChart"></canvas>
                     </div>
@@ -380,42 +402,55 @@
             </div>
         </section>
 
-        <!-- SECTION 6: Academic Research -->
+        <!-- SECTION 6: Academic Research (RCA) -->
         <section id="research" class="content-section fade-in hidden">
              <header class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">מקורות מידע ומחקרים רלוונטיים</h2>
-                <p class="text-gray-600 text-lg">תחומים ונושאים אקדמיים שיועילו לביסוס הפרויקט.</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">שיטור מנבא וביסוס אקדמי</h2>
+                <p class="text-gray-600 text-lg">ניתוח סיבות שורש (RCA) וזיהוי מגמות בסביבה אגרו-טכנולוגית.</p>
             </header>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <p class="text-sm text-gray-600 mb-6">כדי למלא את החלק של "נספחים ומקורות מידע" בהצעת הפרויקט, להלן כיווני מחקר אקדמיים שמוכיחים את הצורך וההיתכנות של "דחלילאיי":</p>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                 
-                <div class="space-y-6">
-                    <div class="flex gap-4">
-                        <div class="text-2xl text-brand-600">&#128214;</div>
+                <div class="mb-8 pb-8 border-b border-gray-100">
+                    <h3 class="text-2xl font-bold text-brand-700 mb-3">מודל חקר סיבות שורש (Root Cause Analysis - RCA)</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        מעבר להרתעה המיידית, דחלילאיי מתפקדת כמערכת מודיעין לטווח ארוך (Predictive Policing). המערכת אוספת מטא-דאטה מכל אירוע (שעה, מיקום במפה, סוג איום, מזג אוויר).
+                        <br>
+                        שימוש במודלים כמו <strong>יערות אקראיים (Random Forest)</strong> או <strong>Gradient Boosting</strong> מאפשר למצוא קורלציות בנתונים - למשל, זיהוי "אזורים חמים" (Hotspots) של גניבות בקר בסופי שבוע. שילוב <strong>מודלי שפה גדולים (LLMs)</strong> יכול לייצר נרטיב טקסטואלי המסביר לחקלאי מהן נקודות התורפה של החווה.
+                    </p>
+                </div>
+
+                <h3 class="text-xl font-bold text-gray-800 mb-6">כיווני מחקר ליישום בפרויקט (מילות מפתח):</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="text-2xl text-slate-500">&#128218;</div>
                         <div>
-                            <h4 class="font-bold text-gray-800 text-lg">מחקרים בתחום התרגלות מזיקים (Habituation)</h4>
-                            <p class="text-sm text-gray-600">יש לחפש מאמרים ב-Google Scholar בנושא: <br>
-                            <code>"Bird habituation to auditory deterrents in agriculture"</code><br>
-                            המאמרים יוכיחו כי דחלילים קבועים או תותחי גז הופכים לבלתי יעילים תוך 3-7 ימים, מה שמצדיק את השימוש ב-AI אקראי ומתחלף.</p>
+                            <strong class="block text-gray-900 mb-1">Object Detection & Edge AI</strong>
+                            <p class="text-sm text-gray-600">חיפוש <code>"YOLO human detection on edge devices in agriculture"</code>. יבסס את יכולת המערכת להשיג אחוזי דיוק גבוהים (מעל 98%) בתנאי שטח מורכבים ללא ענן.</p>
                         </div>
                     </div>
                     
-                    <div class="flex gap-4">
-                        <div class="text-2xl text-brand-600">&#128214;</div>
+                    <div class="flex gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="text-2xl text-slate-500">&#128218;</div>
                         <div>
-                            <h4 class="font-bold text-gray-800 text-lg">זיהוי אובייקטים בחקלאות חכמה (Precision Agriculture)</h4>
-                            <p class="text-sm text-gray-600">יש לחפש מאמרים בנושא: <br>
-                            <code>"YOLO object detection for bird repelling systems"</code> או <code>"Edge computing for agricultural pest detection"</code><br>
-                            מחקרים אלו יספקו מדדים רלוונטיים לביצועים ודיוק (Precision/Recall) שניתן לצפות ממערכות קצה זולות בתנאי שטח.</p>
+                            <strong class="block text-gray-900 mb-1">Early Arson Detection</strong>
+                            <p class="text-sm text-gray-600">חיפוש <code>"Computer vision fire detection using DetectNet_v2"</code>. יוכיח כיצד מצלמה מחליפה חיישני חום/עשן שאינם רלוונטיים באוויר הפתוח.</p>
                         </div>
                     </div>
 
-                    <div class="flex gap-4">
-                        <div class="text-2xl text-brand-600">&#128214;</div>
+                    <div class="flex gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="text-2xl text-slate-500">&#128218;</div>
                         <div>
-                            <h4 class="font-bold text-gray-800 text-lg">תקנים ושמירה על הסביבה (פרויקט ירוק)</h4>
-                            <p class="text-sm text-gray-600">אף שבטופס צוין "לא", כדאי לחשוב שוב! פרויקט כזה יכול להיחשב ירוק שכן הוא <strong>מפחית זיהום רעש</strong> (מופעל רק כשצריך ולא ברצף) ומונע חלופות של <strong>פיזור רעלים וכימיקלים</strong> נגד מזיקים. שווה לבסס זאת מחקרית.</p>
+                            <strong class="block text-gray-900 mb-1">Spatio-temporal Anomalies</strong>
+                            <p class="text-sm text-gray-600">חיפוש <code>"CNN + LSTM for anomaly detection in smart farming"</code>. יבסס את למידת שגרת החווה והתראה רק על פעילות זרה.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="text-2xl text-slate-500">&#128218;</div>
+                        <div>
+                            <strong class="block text-gray-900 mb-1">Active Deterrence & Habituation</strong>
+                            <p class="text-sm text-gray-600">חיפוש <code>"Psychological effects of active deterrence lasers"</code>. מחקר התומך בהשפעת הלייזר הירוק 532nm במניעת התרגלות המזיקים או הפושעים.</p>
                         </div>
                     </div>
                 </div>
@@ -425,9 +460,9 @@
     </main>
 
     <script>
-        // --- Navigation Logic ---
+        // --- Single Page Navigation ---
         function switchTab(tabId) {
-            // Update buttons
+            // UI Button Updates
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(window.innerWidth < 768) {
@@ -445,7 +480,7 @@
                 }
             }
 
-            // Update content sections
+            // Hide all sections, show target
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.add('hidden');
                 section.classList.remove('block');
@@ -457,29 +492,37 @@
                 targetSection.classList.add('block');
             }
 
-            // Re-render chart if navigating to costs to ensure proper size rendering
+            // Force Chart.js resize if tab is 'costs' (solves display bugs on hidden canvas)
             if (tabId === 'costs' && window.myCostChart) {
                 window.myCostChart.resize();
             }
         }
 
-        // --- Chart.js Implementation ---
+        // --- Chart.js Data and Config ---
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('costChart').getContext('2d');
             
-            // Define data directly via JS array/objects
+            // Using the mid-point of the ranges provided in the research document
+            // Compute: (950+1400)/2 = 1175
+            // Camera: (600+1500)/2 = 1050
+            // Solar: (800+1300)/2 = 1050
+            // Comms: (200+400)/2 = 300
+            // Deterrence: (400+1000)/2 = 700
+            // Enclosure: (300+600)/2 = 450
+            
             const costData = {
-                labels: ['יחידת חישוב (AI)', 'מערכת צילום', 'אמצעי הרתעה (שמע)', 'מארז מכני', 'מערכת כוח'],
+                labels: ['חישוב Edge AI', 'צילום חכם', 'אנרגיה סולארית', 'מודם ותקשורת', 'הרתעה (לייזר/סאונד)', 'מארז ואלקטרוניקה'],
                 datasets: [{
-                    data: [500, 250, 150, 200, 300],
+                    data: [1175, 1050, 1050, 300, 700, 450],
                     backgroundColor: [
-                        '#16a34a', // Brand Green
-                        '#3b82f6', // Blue
-                        '#f97316', // Orange
-                        '#8b5cf6', // Purple
-                        '#64748b'  // Slate
+                        '#16a34a', // Jetson
+                        '#334155', // Camera
+                        '#f59e0b', // Solar
+                        '#3b82f6', // Comms
+                        '#b91c1c', // Laser/Audio
+                        '#94a3b8'  // Case
                     ],
-                    borderWidth: 1,
+                    borderWidth: 2,
                     borderColor: '#ffffff'
                 }]
             };
@@ -489,12 +532,14 @@
                 data: costData,
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // CRITICAL for chart container limits
+                    maintainAspectRatio: false, // Critical for CSS bounds
+                    cutout: '60%',
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
-                                font: { family: 'Heebo', size: 14 }
+                                font: { family: 'Heebo', size: 13 },
+                                padding: 20
                             }
                         },
                         tooltip: {
@@ -503,23 +548,23 @@
                                     let label = context.label || '';
                                     if (label) { label += ': '; }
                                     if (context.parsed !== null) {
-                                        label += context.parsed + ' ₪';
+                                        label += '~' + context.parsed + ' ₪ (ממוצע)';
                                     }
                                     return label;
                                 }
                             },
-                            titleFont: { family: 'Heebo' },
-                            bodyFont: { family: 'Heebo' }
+                            titleFont: { family: 'Heebo', size: 14 },
+                            bodyFont: { family: 'Heebo', size: 13 },
+                            padding: 12
                         }
-                    },
-                    cutout: '65%'
+                    }
                 }
             };
 
-            // Initialize and store globally to allow resizing on tab switch
+            // Store instance globally
             window.myCostChart = new Chart(ctx, config);
 
-            // Setup mobile nav initial state
+            // Set up mobile nav initial styles
             if(window.innerWidth < 768) {
                 const firstBtn = document.querySelector('.nav-btn');
                 firstBtn.classList.remove('border-transparent');
