@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחקר דרישות מקדים: פרויקט דחלילאיי</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Earthy Greens, Calm Neutrals, Alert Orange/Red for highlights -->
+    <!-- Application Structure Plan: A Single Page Application (SPA) structured as a professional research dashboard. It uses a sidebar navigation (bottom nav on mobile) to switch between logical sections: Overview, Market Research, Proposed Solution, Technology Stack, Cost Estimation, and Academic Research. This structure allows the user (and project supervisors) to easily navigate the preliminary research logically, without being overwhelmed by a massive text document. Interactivity makes the data engaging. -->
+    <!-- Visualization & Content Choices: 
+         1. Overview: Text & stats -> Inform -> Clean typography blocks -> Easy reading.
+         2. Market: Competitor Analysis -> Compare -> Interactive Grid Cards -> Hover interactions -> Shows flaws vs Dahlil-AI -> HTML/CSS.
+         3. Tech/Hardware: System Architecture -> Organize -> Flexbox layout with Unicode icons -> Clear mental model -> HTML/CSS.
+         4. Costs: Budget Estimation -> Inform/Proportion -> Doughnut Chart -> Visualizing cost breakdown -> Chart.js. NO SVG/Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Heebo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        accent: '#f97316' // Orange for highlights
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc; /* Very light cool gray */
+            color: #1e293b;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .nav-item.active {
+            background-color: #dcfce7;
+            color: #15803d;
+            border-right: 4px solid #16a34a;
+            font-weight: 600;
+        }
+
+        /* Strict Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container { height: 250px; }
+            .mobile-nav-active { border-bottom: 4px solid #16a34a; color: #15803d; font-weight: 600; }
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- Sidebar Navigation (Desktop) / Bottom Nav (Mobile) -->
+    <nav class="bg-white shadow-lg w-full md:w-64 flex-shrink-0 md:h-screen sticky top-0 md:fixed z-50 flex flex-row md:flex-col justify-between md:justify-start overflow-x-auto md:overflow-x-hidden border-b md:border-b-0 md:border-l border-gray-200">
+        <div class="p-6 hidden md:block">
+            <h1 class="text-2xl font-bold text-brand-700 flex items-center gap-2">
+                <span class="text-3xl">&#129302;</span> דחליל-AI
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">מחקר דרישות ופרויקט גמר 2026</p>
+        </div>
+        
+        <div class="flex flex-row md:flex-col w-full" id="nav-menu">
+            <button onclick="switchTab('overview')" class="nav-btn nav-item active flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap">
+                &#128269; סקירת המערכת
+            </button>
+            <button onclick="switchTab('market')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
+                &#128202; מתחרים ובעיות
+            </button>
+            <button onclick="switchTab('solution')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
+                &#128161; הפתרון שלנו
+            </button>
+            <button onclick="switchTab('tech')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
+                &#128736; טכנולוגיה וחומרה
+            </button>
+            <button onclick="switchTab('costs')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
+                &#128176; עלויות ומשאבים
+            </button>
+            <button onclick="switchTab('research')" class="nav-btn flex-1 md:flex-none text-right px-4 py-3 md:px-6 md:py-4 transition-colors hover:bg-gray-50 text-sm md:text-base whitespace-nowrap border-b-0 md:border-r-0 md:border-b border-transparent">
+                &#128218; רקע אקדמי
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 md:mr-64 p-4 md:p-8 overflow-y-auto">
+        
+        <!-- SECTION 1: Overview -->
+        <section id="overview" class="content-section fade-in block">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">תקציר מנהלים: פרויקט "דחלילאיי"</h2>
+                <p class="text-gray-600 text-lg">מערכת אוטונומית מבוססת בינה מלאכותית להרחקת מזיקים מחקלאות</p>
+            </header>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6">
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    פרויקט "דחלילאיי" מציע פתרון חדשני לבעיה עתיקת יומין: נזקי חקלאות הנגרמים על ידי ציפורים ומזיקים אחרים. נזקים אלו מוערכים במיליארדי דולרים בשנה ברחבי העולם.
+                    המערכת שלנו משלבת ראייה ממוחשבת (Computer Vision) בקצה (Edge AI) כדי לזהות בזמן אמת חדירת מזיקים, לסווג אותם, ולהפעיל אמצעי הרתעה ספציפיים ומשתנים (קול, תנועה, תאורה) כדי למנוע התרגלות (Habituation).
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div class="bg-brand-50 p-4 rounded-lg border border-brand-100 text-center">
+                        <div class="text-3xl mb-2">&#128065;</div>
+                        <h4 class="font-bold text-brand-900">זיהוי מדויק</h4>
+                        <p class="text-sm text-gray-600 mt-1">אלגוריתם AI מזהה את סוג המזיק ומונע הפעלת שווא על בני אדם או חיות משק.</p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center">
+                        <div class="text-3xl mb-2">&#127919;</div>
+                        <h4 class="font-bold text-blue-900">הרתעה דינמית</h4>
+                        <p class="text-sm text-gray-600 mt-1">שינוי דפוסי פעולה אוטומטי כדי למנוע מהמזיקים להתרגל למערכת.</p>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg border border-orange-100 text-center">
+                        <div class="text-3xl mb-2">&#128200;</div>
+                        <h4 class="font-bold text-orange-900">איסוף נתונים</h4>
+                        <p class="text-sm text-gray-600 mt-1">תיעוד תנועת המזיקים והפקת דוחות לחקלאי לטובת קבלת החלטות.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Market & Competitors -->
+        <section id="market" class="content-section fade-in hidden">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">מחקר שוק ומתחרים</h2>
+                <p class="text-gray-600 text-lg">בחינת הפתרונות הקיימים בשוק והכשלים המרכזיים שלהם.</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Competitor 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div class="text-4xl mb-3 text-center">&#128168;</div>
+                    <h3 class="text-xl font-bold text-center mb-2">תותחי גז / פצצות קול</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">הפתרון הנפוץ ביותר כיום. מפיק פיצוצים רועשים במרווחי זמן קבועים.</p>
+                    <div class="bg-red-50 p-3 rounded text-sm text-red-800 border border-red-100">
+                        <strong>בעיות מרכזיות:</strong>
+                        <ul class="list-disc list-inside mt-1">
+                            <li>התרגלות מהירה מאוד של הציפורים (מספר ימים).</li>
+                            <li>זיהום רעש סביבתי ופגיעה ביישובים סמוכים.</li>
+                            <li>פועל בצורה עיוורת גם כשאין מזיקים.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Competitor 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div class="text-4xl mb-3 text-center">&#128641;</div> <!-- Laser proxy -->
+                    <h3 class="text-xl font-bold text-center mb-2">מערכות לייזר אוטומטיות</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">מערכות (כמו Agrilaser) הסורקות את השדה בקרני לייזר ירוקות.</p>
+                    <div class="bg-red-50 p-3 rounded text-sm text-red-800 border border-red-100">
+                        <strong>בעיות מרכזיות:</strong>
+                        <ul class="list-disc list-inside mt-1">
+                            <li>עלות גבוהה מאוד (אלפי דולרים למערכת).</li>
+                            <li>סריקה עיוורת - לא מזהה מטרה, עובד על טיימר.</li>
+                            <li>סכנת סינוור לבני אדם / כלים חקלאיים.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Competitor 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div class="text-4xl mb-3 text-center">&#129413;</div>
+                    <h3 class="text-xl font-bold text-center mb-2">דחלילים סטטיים / עפיפונים</h3>
+                    <p class="text-sm text-gray-600 mb-4 text-center">פתרונות ויזואליים דמויי טורפים שמוצבים בשטח.</p>
+                    <div class="bg-red-50 p-3 rounded text-sm text-red-800 border border-red-100">
+                        <strong>בעיות מרכזיות:</strong>
+                        <ul class="list-disc list-inside mt-1">
+                            <li>אפקטיביות יורדת לאפס לאחר זמן קצר.</li>
+                            <li>דורש הזזה ידנית מתמדת על ידי החקלאי.</li>
+                            <li>בלאי גבוה מפגעי מזג אוויר.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Proposed Solution -->
+        <section id="solution" class="content-section fade-in hidden">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">היתרון היחסי של דחלילאיי</h2>
+                <p class="text-gray-600 text-lg">כיצד המערכת פותרת את כשלי השוק הקיימים.</p>
+            </header>
+
+            <div class="bg-white rounded-xl shadow-sm border border-brand-200 p-6 overflow-hidden">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-brand-700 mb-4">תגובה מותאמת ואקטיבית</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <span class="text-accent text-xl">&#10004;</span>
+                                <div>
+                                    <strong class="block text-gray-800">מניעת התרגלות (Anti-Habituation)</strong>
+                                    <p class="text-sm text-gray-600">המערכת משתמשת בלמידת חיזוק או באלגוריתמיקה אקראית כדי לשנות את סוג ההרתעה (קולות עורב, צפצופים, תנועה מכנית) בהתאם לתגובת הציפור בעבר.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-accent text-xl">&#10004;</span>
+                                <div>
+                                    <strong class="block text-gray-800">פעולה ממוקדת בלבד</strong>
+                                    <p class="text-sm text-gray-600">המערכת "ישנה" עד לזיהוי ודאי של מזיק דרך המצלמה. חוסך באנרגיה (קריטי להפעלה סולארית) ומונע רעש מיותר.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-accent text-xl">&#10004;</span>
+                                <div>
+                                    <strong class="block text-gray-800">עלות אל מול תועלת</strong>
+                                    <p class="text-sm text-gray-600">שימוש ברכיבי קצה זולים יחסית (Raspberry Pi/Jetson) ומצלמות אבטחה סטנדרטיות, מאפשר פריסה רחבה בעלות שבריר ממערכות לייזר מסחריות.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex-1 bg-gray-50 p-6 rounded-lg text-center border border-gray-200">
+                        <h4 class="font-bold text-gray-700 mb-4">מעגל הפעולה של המערכת</h4>
+                        <div class="flex flex-col gap-2">
+                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-blue-500">1. סריקת מצלמה וזיהוי תנועה</div>
+                            <div class="text-gray-400">&#8595;</div>
+                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-indigo-500">2. סיווג אובייקט (YOLO AI) - האם זה מזיק?</div>
+                            <div class="text-gray-400">&#8595;</div>
+                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-orange-500">3. בחירת אמצעי הרתעה אופטימלי (שמע/תנועה/אור)</div>
+                            <div class="text-gray-400">&#8595;</div>
+                            <div class="bg-white p-3 rounded shadow-sm border-l-4 border-green-500">4. הפעלה ממוקדת ותיעוד בענן</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Technology & Hardware -->
+        <section id="tech" class="content-section fade-in hidden">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">דרישות טכנולוגיות וחומרה</h2>
+                <p class="text-gray-600 text-lg">האמצעים הנדרשים לפיתוח אב הטיפוס.</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Software Stack -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="text-2xl">&#128187;</span> תוכנה ואלגוריתמיקה</h3>
+                    <div class="space-y-4">
+                        <div class="border-b pb-2">
+                            <strong class="text-gray-800 block">מודל ראייה ממוחשבת (CV)</strong>
+                            <span class="text-sm text-gray-600">YOLOv8 או MobileNet SSD לזיהוי אובייקטים בזמן אמת על חומרת קצה מוגבלת (Edge AI). שימוש בספריית OpenCV לעיבוד התמונה.</span>
+                        </div>
+                        <div class="border-b pb-2">
+                            <strong class="text-gray-800 block">שפת פיתוח (Backend)</strong>
+                            <span class="text-sm text-gray-600">Python 3.x כשפה המרכזית בבקר הקצה (ניהול החומרה, תקשורת והרצת המודל). שימוש ב-FastAPI לניהול API מקומי.</span>
+                        </div>
+                        <div class="border-b pb-2">
+                            <strong class="text-gray-800 block">תקשורת ומסד נתונים</strong>
+                            <span class="text-sm text-gray-600">פרוטוקול MQTT לדיווח אירועים מהיר. שמירת לוגים מקומית ב-SQLite או סנכרון ל-Firebase/MongoDB בענן.</span>
+                        </div>
+                        <div>
+                            <strong class="text-gray-800 block">ממשק משתמש (לוח בקרה)</strong>
+                            <span class="text-sm text-gray-600">אפליקציית Web פשוטה (React / HTML+JS+Tailwind) להצגת סטטיסטיקות לחקלאי ושליטה מרחוק.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hardware Stack -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="text-2xl">&#128736;</span> חומרה וציוד נדרש</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
+                            <div class="text-3xl">&#128421;</div>
+                            <div>
+                                <strong class="text-gray-800 text-sm block">מיקרו-בקר / מחשב קצה</strong>
+                                <span class="text-xs text-gray-500">Raspberry Pi 4/5 או NVIDIA Jetson Nano (מועדף לביצועי AI גבוהים).</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
+                            <div class="text-3xl">&#128247;</div>
+                            <div>
+                                <strong class="text-gray-800 text-sm block">מצלמת רשת / ייעודית</strong>
+                                <span class="text-xs text-gray-500">מצלמת RPi Camera Module 3 או מצלמת IP חיצונית תומכת ראיית לילה (IR).</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
+                            <div class="text-3xl">&#128226;</div>
+                            <div>
+                                <strong class="text-gray-800 text-sm block">אמצעי הרתעה (Actuators)</strong>
+                                <span class="text-xs text-gray-500">רמקול עוצמתי (Horn Speaker) וכרטיס קול בסיסי להפקת צלילים משתנים. אופציה: פנס לד עוצמתי להבהוב בלילה.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded">
+                            <div class="text-3xl">&#128267;</div>
+                            <div>
+                                <strong class="text-gray-800 text-sm block">הזנת מתח סולארית (אופציונלי לאב טיפוס)</strong>
+                                <span class="text-xs text-gray-500">פאנל סולארי קטן 50W, בקר טעינה וסוללת LiFePo4 לעצמאות בשטח.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Cost Estimation -->
+        <section id="costs" class="content-section fade-in hidden">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">הערכת עלויות ואמצעים</h2>
+                <p class="text-gray-600 text-lg">תקציב משוער לבניית אב-טיפוס אחד (מערכת עצמאית אחת).</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4">טבלת פירוט עלויות</h3>
+                    <table class="w-full text-sm text-right text-gray-500">
+                        <thead class="text-xs text-gray-700 bg-gray-50 border-b">
+                            <tr>
+                                <th scope="col" class="px-2 py-3">רכיב</th>
+                                <th scope="col" class="px-2 py-3 text-left">עלות (₪)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <td class="px-2 py-3 font-medium text-gray-900">יחידת חישוב (Jetson Nano / RPi)</td>
+                                <td class="px-2 py-3 text-left font-bold">500</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-2 py-3 font-medium text-gray-900">מערכת צילום ולדים IR</td>
+                                <td class="px-2 py-3 text-left font-bold">250</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-2 py-3 font-medium text-gray-900">מערכת שמע/רמקול ואלקטרוניקה</td>
+                                <td class="px-2 py-3 text-left font-bold">150</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-2 py-3 font-medium text-gray-900">מארז מוגן מים (IP65) וזווד</td>
+                                <td class="px-2 py-3 text-left font-bold">200</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <td class="px-2 py-3 font-medium text-gray-900">מערכת כוח (סוללה + בקר, ללא פאנל)</td>
+                                <td class="px-2 py-3 text-left font-bold">300</td>
+                            </tr>
+                            <tr class="bg-gray-100 font-bold text-gray-900">
+                                <td class="px-2 py-3">סה"כ משוער לאב-טיפוס</td>
+                                <td class="px-2 py-3 text-left">1,400 ₪</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="text-xs text-gray-400 mt-4">* עלויות התוכנה (סביבות פיתוח, מודלים) הן ברובן חינמיות (Open Source). נדרשת זמינות במעבדות המכללה למדפסות תלת-ממד למארזים וכלי הלחמה.</p>
+                </div>
+
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4 text-center">התפלגות התקציב למערכת</h3>
+                    <div class="chart-container">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 6: Academic Research -->
+        <section id="research" class="content-section fade-in hidden">
+             <header class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">מקורות מידע ומחקרים רלוונטיים</h2>
+                <p class="text-gray-600 text-lg">תחומים ונושאים אקדמיים שיועילו לביסוס הפרויקט.</p>
+            </header>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <p class="text-sm text-gray-600 mb-6">כדי למלא את החלק של "נספחים ומקורות מידע" בהצעת הפרויקט, להלן כיווני מחקר אקדמיים שמוכיחים את הצורך וההיתכנות של "דחלילאיי":</p>
+                
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="text-2xl text-brand-600">&#128214;</div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg">מחקרים בתחום התרגלות מזיקים (Habituation)</h4>
+                            <p class="text-sm text-gray-600">יש לחפש מאמרים ב-Google Scholar בנושא: <br>
+                            <code>"Bird habituation to auditory deterrents in agriculture"</code><br>
+                            המאמרים יוכיחו כי דחלילים קבועים או תותחי גז הופכים לבלתי יעילים תוך 3-7 ימים, מה שמצדיק את השימוש ב-AI אקראי ומתחלף.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <div class="text-2xl text-brand-600">&#128214;</div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg">זיהוי אובייקטים בחקלאות חכמה (Precision Agriculture)</h4>
+                            <p class="text-sm text-gray-600">יש לחפש מאמרים בנושא: <br>
+                            <code>"YOLO object detection for bird repelling systems"</code> או <code>"Edge computing for agricultural pest detection"</code><br>
+                            מחקרים אלו יספקו מדדים רלוונטיים לביצועים ודיוק (Precision/Recall) שניתן לצפות ממערכות קצה זולות בתנאי שטח.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="text-2xl text-brand-600">&#128214;</div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg">תקנים ושמירה על הסביבה (פרויקט ירוק)</h4>
+                            <p class="text-sm text-gray-600">אף שבטופס צוין "לא", כדאי לחשוב שוב! פרויקט כזה יכול להיחשב ירוק שכן הוא <strong>מפחית זיהום רעש</strong> (מופעל רק כשצריך ולא ברצף) ומונע חלופות של <strong>פיזור רעלים וכימיקלים</strong> נגד מזיקים. שווה לבסס זאת מחקרית.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Navigation Logic ---
+        function switchTab(tabId) {
+            // Update buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(window.innerWidth < 768) {
+                    btn.classList.remove('mobile-nav-active', 'border-brand-500');
+                    btn.classList.add('border-transparent');
+                }
+            });
+            
+            const activeBtn = event.currentTarget || document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
+            if(activeBtn) {
+                activeBtn.classList.add('active');
+                if(window.innerWidth < 768) {
+                     activeBtn.classList.add('mobile-nav-active', 'border-brand-500');
+                     activeBtn.classList.remove('border-transparent');
+                }
+            }
+
+            // Update content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('block');
+            });
+            
+            const targetSection = document.getElementById(tabId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('block');
+            }
+
+            // Re-render chart if navigating to costs to ensure proper size rendering
+            if (tabId === 'costs' && window.myCostChart) {
+                window.myCostChart.resize();
+            }
+        }
+
+        // --- Chart.js Implementation ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            
+            // Define data directly via JS array/objects
+            const costData = {
+                labels: ['יחידת חישוב (AI)', 'מערכת צילום', 'אמצעי הרתעה (שמע)', 'מארז מכני', 'מערכת כוח'],
+                datasets: [{
+                    data: [500, 250, 150, 200, 300],
+                    backgroundColor: [
+                        '#16a34a', // Brand Green
+                        '#3b82f6', // Blue
+                        '#f97316', // Orange
+                        '#8b5cf6', // Purple
+                        '#64748b'  // Slate
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#ffffff'
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: costData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // CRITICAL for chart container limits
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Heebo', size: 14 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + ' ₪';
+                                    }
+                                    return label;
+                                }
+                            },
+                            titleFont: { family: 'Heebo' },
+                            bodyFont: { family: 'Heebo' }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            };
+
+            // Initialize and store globally to allow resizing on tab switch
+            window.myCostChart = new Chart(ctx, config);
+
+            // Setup mobile nav initial state
+            if(window.innerWidth < 768) {
+                const firstBtn = document.querySelector('.nav-btn');
+                firstBtn.classList.remove('border-transparent');
+                firstBtn.classList.add('mobile-nav-active', 'border-brand-500');
+            }
+        });
+    </script>
+</body>
+</html>
